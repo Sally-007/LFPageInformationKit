@@ -58,12 +58,18 @@
                               @"buttonLeading":@(_layout.actionButtonInsets.left),
                               @"buttonTrailing":@(_layout.actionButtonInsets.right),
                               @"imageHeight":@(_layout.imageViewHeight),
-                              @"buttonHeight":@(_layout.actionButtonHeight)};
+                              @"buttonHeight":@(_layout.actionButtonHeight),
+                              @"buttonWidth":@(_layout.actionButtonWidth)};
     
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-imageTop-[imageView(imageHeight)]-labelTop-[textLabel]-buttonTop-[actionButton(buttonHeight)]" options:0 metrics:metrics views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-imageLeading-[imageView]-imageTrailing-|" options:0 metrics:metrics views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-labelLeading-[textLabel]-labelTrailing-|" options:0 metrics:metrics views:views]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-buttonLeading-[actionButton]-buttonTrailing-|" options:0 metrics:metrics views:views]];
+    if (_layout.actionButtonWidth > 0) {
+        [self addConstraint:[NSLayoutConstraint constraintWithItem:_actionButton attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0.0]];
+        [self addConstraint:[NSLayoutConstraint constraintWithItem:_actionButton attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:_layout.actionButtonWidth]];
+    }else{
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-buttonLeading-[actionButton]-buttonTrailing-|" options:0 metrics:metrics views:views]];
+    }
     
     [self updateTextLabelPreferredMaxLayoutWidth];
 }
@@ -112,6 +118,8 @@
         _textLabelInsets = [aDecoder decodeUIEdgeInsetsForKey:NSStringFromSelector(@selector(textLabelInsets))];
         _actionButtonInsets = [aDecoder decodeUIEdgeInsetsForKey:NSStringFromSelector(@selector(actionButtonInsets))];
         _actionButtonHeight = [aDecoder decodeFloatForKey:NSStringFromSelector(@selector(actionButtonHeight))];
+        _actionButtonWidth = [aDecoder decodeFloatForKey:NSStringFromSelector(@selector(actionButtonWidth))];
+
     }
     return self;
 }
@@ -123,6 +131,7 @@
     [aCoder encodeUIEdgeInsets:_textLabelInsets forKey:NSStringFromSelector(@selector(textLabelInsets))];
     [aCoder encodeUIEdgeInsets:_actionButtonInsets forKey:NSStringFromSelector(@selector(actionButtonInsets))];
     [aCoder encodeFloat:_actionButtonHeight forKey:NSStringFromSelector(@selector(actionButtonHeight))];
+    [aCoder encodeFloat:_actionButtonWidth forKey:NSStringFromSelector(@selector(actionButtonWidth))];
 }
 
 - (id)copyWithZone:(NSZone *)zone
@@ -133,6 +142,8 @@
     copyItem.textLabelInsets = _textLabelInsets;
     copyItem.actionButtonInsets = _actionButtonInsets;
     copyItem.actionButtonHeight = _actionButtonHeight;
+    copyItem.actionButtonWidth = _actionButtonWidth;
+
     return copyItem;
 }
 

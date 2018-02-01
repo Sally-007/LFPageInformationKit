@@ -61,5 +61,6 @@
 //@property (nonatomic) CGFloat textLabelHeight;
 @property (nonatomic) UIEdgeInsets actionButtonInsets;
 @property (nonatomic) CGFloat actionButtonHeight;
+@property (nonatomic) CGFloat actionButtonWidth;
 
 @end
